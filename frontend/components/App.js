@@ -1,4 +1,4 @@
-import React from 'react' // 👈 you'll need the reducer hook
+import React,  {useReducer } from 'react' // 👈 you'll need the reducer hook
 import Quotes from './Quotes'
 import QuoteForm from './QuoteForm'
 
@@ -33,10 +33,64 @@ const quotes = [
 ]
 
 // 👇 create your initial state object here
-
+const initialState = {
+  quotes: [
+    {
+      id: getNextId(),
+      quoteText: "Don't cry because it's over, smile because it happened.",
+      authorName: "Dr. Seuss",
+      apocryphal: false,
+    },
+    {
+      id: getNextId(),
+      quoteText: "So many books, so little time.",
+      authorName: "Frank Zappa",
+      apocryphal: false,
+    },
+    {
+      id: getNextId(),
+      quoteText: "Be yourself; everyone else is already taken.",
+      authorName: "Oscar Wilde",
+      apocryphal: false,
+    },
+  ],
+  displayAllQuotes: true,
+  highlightedQuote: null,
+};
 const reducer = (state, action) => {
   // 👇 implement your reducer here using the action types above
-}
+  switch (action.type) {
+    case CREATE_QUOTE:
+      return {
+        ...state,
+        quotes: [...state.quotes, action.payload],
+      };
+    case DELETE_QUOTE:
+      return {
+        ...state,
+        quotes: state.quotes.filter(quote => quote.id !== action.payload),
+      };
+    case EDIT_QUOTE_AUTHENTICITY:
+      return {
+        ...state,
+        quotes: state.quotes.map(quote => 
+          quote.id === action.payload ? { ...quote, apocryphal: !quote.apocryphal } : quote
+        ),
+      };
+    case SET_HIGHLIGHTED_QUOTE:
+      return {
+        ...state,
+        highlightedQuote: action.payload,
+      };
+    case TOGGLE_VISIBILITY:
+      return {
+        ...state,
+        displayAllQuotes: !state.displayAllQuotes,
+      };
+      default:
+        return state;
+  }
+};
 
 export default function App() {
   // 👇 use the reducer hook to spin up state and dispatch
